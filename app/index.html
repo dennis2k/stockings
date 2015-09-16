@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html lang="en" ng-strict-di >
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Stockings</title>
+    
+    <!--<link rel="stylesheet" href="bower_components/angularjs-toaster/toaster.css">-->
+    <!-- Load font awesome at first cause loading icons is dependent on it -->
+    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="stylesheet" href="assets/css/custom.css">
+    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.min.css">
+
+    
+</head>
+
+<body ng-controller="AppController as app">
+	<div id="wrapper">
+		<ng-include src="'src/templates/navbar.html'"></ng-include>
+		
+		<div id="#page-content-wrapper" data-ui-view="" data-autoscroll="false"></div>		
+	</div>
+</body>
+    <script type="text/javascript" src="dist/vendor.base.js"></script>
+    <script type="text/javascript" src="dist/stocking.views.js"></script>
+    <script type="text/javascript" src="dist/stocking.js"></script>
+</html>

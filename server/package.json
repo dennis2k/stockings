@@ -1,0 +1,10 @@
+{
+  "name": "node-api",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "~1.0.1",
+    "express": "~4.0.0",
+    "express-restify-mongoose": "^1.0.4",
+    "mongoose": "~4.1.7"
+  }
+}
