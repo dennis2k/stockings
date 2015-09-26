@@ -16,6 +16,9 @@ var app;
         DataService.prototype.findByQuery = function (query) {
             return this.Restangular.all(this.resource).getList(query.toFilter());
         };
+        DataService.prototype.delete = function (entity) {
+            return this.Restangular.one(this.resource, entity._id).remove();
+        };
         return DataService;
     })();
     app.DataService = DataService;
@@ -89,9 +92,32 @@ var app;
                 url: '/products',
                 templateUrl: 'src/modules/products/product-list.html',
                 controller: 'ProductListController',
-                controllerAs: 'vm'
+                controllerAs: 'vm',
+                resolve: {
+                    products: function (ProductService) {
+                        return ProductService.findAll();
+                    }
+                }
+            })
+                .state('app.product', {
+                url: '/products/:id',
+                templateUrl: 'src/modules/products/product.html',
+                controller: 'ProductController',
+                controllerAs: 'vm',
+                resolve: {
+                    product: function (ProductService, $stateParams) {
+                        if (AppRoutes.hasId($stateParams))
+                            return ProductService.findById($stateParams['id']);
+                        return null;
+                    }
+                }
             });
         }
+        AppRoutes.hasId = function ($stateParams) {
+            if ($stateParams['id'] && $stateParams['id'] != '')
+                return true;
+            return false;
+        };
         return AppRoutes;
     })();
     app.AppRoutes = AppRoutes;
@@ -109,11 +135,17 @@ var app;
             $rootScope.authorized = false;
             $rootScope.blockui = false;
             $rootScope.init_path = $location.path();
+            //Handle toast on response
             Restangular.addResponseInterceptor(function (data, operation, what, url, response, deferred) {
+                if (operation == 'remove')
+                    toaster.success('Success!', 'Entity deleted!');
+                if (operation == 'save')
+                    toaster.success('Success!', 'Entity saved!');
                 console.log(response.status);
                 console.log("Interfacepting data response");
                 return data;
             });
+            //Catch API erorrs
             Restangular.setErrorInterceptor(function (response) {
                 if (response.status == 401 || response.status == 403) {
                     localStorageService.clearAll();
@@ -358,21 +390,48 @@ var app;
 var app;
 (function (app) {
     var ProductListController = (function () {
-        function ProductListController(ProductService) {
-            var _this = this;
-            this.products = [];
-            var q = new app.Query();
-            q.contains('name', 'MAA');
-            ProductService.findByQuery(q).then(function (response) {
-                _this.products = response;
-                console.log(_this.products);
-            });
+        function ProductListController(ProductService, products) {
+            this.ProductService = ProductService;
+            this.products = products;
         }
-        ProductListController.$inject = ["ProductService"];
+        ProductListController.$inject = ["ProductService", "products"];
+        ProductListController.prototype.remove = function (product) {
+            var _this = this;
+            this.ProductService.delete(product).then(function (response) {
+                _this.products.splice(_this.products.indexOf(product), 1);
+            });
+        };
         return ProductListController;
     })();
     app.ProductListController = ProductListController;
     angular.module('app').controller('ProductListController', ProductListController);
+})(app || (app = {}));
+
+var app;
+(function (app) {
+    var ProductController = (function () {
+        function ProductController(ProductService, $state, product) {
+            this.ProductService = ProductService;
+            this.$state = $state;
+            this.product = product;
+            this.products = [];
+            console.log(product);
+        }
+        ProductController.$inject = ["ProductService", "$state", "product"];
+        ProductController.prototype.save = function (product) {
+            this.ProductService.save(product).then(function (response) {
+            });
+        };
+        ProductController.prototype.remove = function (product) {
+            var _this = this;
+            this.ProductService.delete(product).then(function (response) {
+                _this.$state.go('app.products');
+            });
+        };
+        return ProductController;
+    })();
+    app.ProductController = ProductController;
+    angular.module('app').controller('ProductController', ProductController);
 })(app || (app = {}));
 
 var __extends = (this && this.__extends) || function (d, b) {

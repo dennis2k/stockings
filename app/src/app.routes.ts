@@ -30,9 +30,35 @@ module app {
                 url: '/products',
                 templateUrl : 'src/modules/products/product-list.html',                                
                 controller: 'ProductListController',
-                controllerAs : 'vm'
+                controllerAs : 'vm',
+                resolve : {
+                    products : (ProductService : ProductService) => {
+                        return ProductService.findAll();
+                    }
+                }
+            })
+            .state('app.product', {
+                url: '/products/:id',
+                templateUrl : 'src/modules/products/product.html',                                
+                controller: 'ProductController',
+                controllerAs : 'vm',
+                resolve : {
+                    product : (ProductService : ProductService,$stateParams : ng.ui.IStateParamsService) => {
+                        if(AppRoutes.hasId($stateParams))
+                            return ProductService.findById($stateParams['id'])
+                        return null;
+                    }
+                }
             })
             
-  	  } 
+  	     } 
+        
+        static hasId($stateParams) {
+            if($stateParams['id'] && $stateParams['id'] != '')
+                return true;
+            return false;
+        }
 	}
+    
+    
 }

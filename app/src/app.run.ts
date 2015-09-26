@@ -18,13 +18,20 @@ module app {
             $rootScope.blockui = false;
             $rootScope.init_path = $location.path();
             
-            Restangular.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
+            //Handle toast on response
+            Restangular.addResponseInterceptor((data, operation, what, url, response, deferred) => {
+                if(operation == 'remove')
+                    toaster.success('Success!','Entity deleted!')
+                if(operation == 'save')
+                    toaster.success('Success!','Entity saved!')
                 console.log(response.status);
                 console.log("Interfacepting data response")
                 return data;
             });
+            
+            //Catch API erorrs
              Restangular.setErrorInterceptor(
-                function(response) {
+                (response) => {
                     if (response.status == 401 || response.status == 403) {
                         localStorageService.clearAll();
                         $state.go('login')

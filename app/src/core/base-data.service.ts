@@ -21,5 +21,9 @@ module app {
 		findByQuery(query : Query) {
 			return this.Restangular.all(this.resource).getList(query.toFilter());
 		}
+		
+		delete(entity) {
+			return this.Restangular.one(this.resource,entity._id).remove();
+		}
 	}
 }

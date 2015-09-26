@@ -7,5 +7,6 @@ mongoose.connect('mongodb://fiskepind1337:bandithalm1337@ds027819.mongolab.com:2
 
 restify.serve(router, require('../models/product'));
 restify.serve(router, require('../models/category'));
+restify.serve(router, require('../models/stocking'));
 
 module.exports = router

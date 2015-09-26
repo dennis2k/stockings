@@ -1,16 +1,17 @@
 module app {
 	export class ProductListController {
 		
-		private products = [];
-		
-		constructor(ProductService : ProductService) {
+		constructor(
+			private ProductService : ProductService,
+			private products : Array<any>
+			) {			
 			
-			var q = new Query();
-			q.contains('name', 'MAA');
-			ProductService.findByQuery(q).then((response) => {
-				this.products = response;
-				console.log(this.products);
-			})
+		}
+		
+		remove(product) {
+			this.ProductService.delete(product).then((response) => {
+				this.products.splice(this.products.indexOf(product),1);
+			});
 		}
 	}
 	
