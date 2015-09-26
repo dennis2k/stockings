@@ -10,13 +10,38 @@ module app {
             toaster : ngtoaster.IToasterService,
             $state : ng.ui.IStateService,
             $location : ng.ILocationService,
-            localStorageService : angular.local.storage.ILocalStorageService) {
+            localStorageService : angular.local.storage.ILocalStorageService,
+            Restangular : restangular.IService) {
 
             $rootScope.bootstrapped = false;
             $rootScope.authorized = false;
             $rootScope.blockui = false;
-            $rootScope.init_path = $location.path();       
+            $rootScope.init_path = $location.path();
+            
+            Restangular.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
+                console.log(response.status);
+                console.log("Interfacepting data response")
+                return data;
+            });
+             Restangular.setErrorInterceptor(
+                function(response) {
+                    if (response.status == 401 || response.status == 403) {
+                        localStorageService.clearAll();
+                        $state.go('login')
+                    } else if (response.status == 404) {
+                        console.error("Resource not available...");
+                    } else if (response.status == 400 || response.status == 500) {
+                        console.error("Error response from server");
+                    }
+                    return false; // stop the promise chain
+                }
+            );       
                 
+            //Set token if it is localstorage
+            var token = localStorageService.get('token');
+            if(token) {
+                Restangular.setDefaultHeaders({'x-access-token' : token})
+            }
 
             /**
              * Handles when we get authorized
@@ -25,17 +50,16 @@ module app {
             $rootScope.$on('authorized',(event,data) => {
                 $rootScope.authorized = true;
                 $rootScope.user = localStorageService.get('user');
+                $state.go('app.products');
             })
             /**
              * Handles unauthorized sessions
              */
-            $rootScope.$on('unauthorized',(event,data) => {
-                toaster.error("Invalid credentials", "Wrong username or password");
-                $rootScope.init_path == "/pages/login"                
+            $rootScope.$on('unauthorized',(event,data) => {                
                 $rootScope.bootstrapped = true;
                 $rootScope.authorized = false;
                 $rootScope.blockui = false;
-                $state.go('pages.logout');
+                $state.go('login');
             })
 
             /**
@@ -100,6 +124,7 @@ module app {
                 $rootScope.blockui = false
             })
 
+            $state.go('login');
         }
     }
 }

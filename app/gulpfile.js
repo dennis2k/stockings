@@ -27,15 +27,10 @@ var base = {
 var app = {
     name : 'stocking.js',
     src : 'src/**/*.ts',
-    modules : 'src/**/*.module.ts',
-    base : "src/modules/**/base-*.ts",
-    main : 'src/modules/main/*.ts',
-    app_file : 'src/modules/main/app.ts',
+    base : "src/**/base-*.ts",
     dest : 'dist',
     definitions : 'typings/tsd/**/*.ts',
     custom_definitions : 'typings/custom/custom.d.ts',
-    tests : 'src/**/*.specs.ts',
-    test_helper : 'tests/test-helper.model.ts',
     views : 'src/**/*.html'
 };
 
@@ -83,7 +78,7 @@ gulp.task('build-base', function() {
  * Compile the src - dynamically replace the api endpoint and set timestamp on things that needs not to be cached
  */
 gulp.task('build-src', function () {
-    var tsResult = gulp.src([app.modules, app.base,app.src,app.main,app.app_file,app.definitions,app.custom_definitions])
+    var tsResult = gulp.src([app.base,app.src,app.definitions,app.custom_definitions])
         .pipe(ts({
             noImplicitAny: false,
             removeComments : false,
@@ -104,7 +99,7 @@ gulp.task('build-src', function () {
 gulp.task('build-tsconfig', function(){
     var target = gulp.src('tsconfig.json');
     //IMPORTANT - app.custom_definitions must go last as it is used to NOT put comma on the last row in tsconfig.json
-    var sources = gulp.src([app.modules, app.base,app.src,app.definitions,app.custom_definitions], {read: false});
+    var sources = gulp.src([app.base,app.src,app.definitions,app.custom_definitions], {read: false});
     return target.pipe(inject(sources, {
        starttag: '"files" : [',
         endtag: ']',

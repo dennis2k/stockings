@@ -6,23 +6,15 @@
     <base href="/" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Stockings</title>
-    
-    <!--<link rel="stylesheet" href="bower_components/angularjs-toaster/toaster.css">-->
-    <!-- Load font awesome at first cause loading icons is dependent on it -->
+    <title>Stockings</title>    
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="stylesheet" href="assets/css/custom.css">
     <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.min.css">
-
-    
 </head>
 
 <body ng-controller="AppController as app">
-	<div id="wrapper">
-		<ng-include src="'src/templates/navbar.html'"></ng-include>
-		
-		<div id="#page-content-wrapper" data-ui-view="" data-autoscroll="false"></div>		
-	</div>
+    <toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+	<div class="content" ui-view></div>
 </body>
     <script type="text/javascript" src="dist/vendor.base.js"></script>
     <script type="text/javascript" src="dist/stocking.views.js"></script>

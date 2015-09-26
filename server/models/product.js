@@ -1,10 +1,13 @@
 var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
-var ProductSchema   = new Schema({
-    name: String,
-    description : String,
-    price : Number	
-});
+var model = mongoose.model('products', new mongoose.Schema({
+  name: { type: String, required: true },
+  description : String,
+  categories: { type: Array },
+  stockings : [
+    { type: mongoose.Schema.Types.ObjectId, ref : 'stockings' },
+  ]
+}));
 
-module.exports = mongoose.model('Product', ProductSchema);
+module.exports = model;

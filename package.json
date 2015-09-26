@@ -1,0 +1,15 @@
+{
+  "name": "node-api",
+  "main": "server.js",
+  "dependencies": {
+    "basic-auth-connect": "^1.0.0",
+    "body-parser": "~1.0.1",
+    "crypto": "0.0.3",
+    "express": "~4.8.0",
+    "express-restify-mongoose": "^1.0.4",
+    "jsonwebtoken": "^5.0.5",
+    "method-override": "^2.3.5",
+    "mongoose": "~4.1.7",
+    "morgan": "^1.6.1"
+  }
+}

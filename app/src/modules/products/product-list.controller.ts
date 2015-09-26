@@ -1,9 +1,18 @@
 module app {
-	export class ProductControllerList {
-		constructor() {
-			console.log("Hello controller")
+	export class ProductListController {
+		
+		private products = [];
+		
+		constructor(ProductService : ProductService) {
+			
+			var q = new Query();
+			q.contains('name', 'MAA');
+			ProductService.findByQuery(q).then((response) => {
+				this.products = response;
+				console.log(this.products);
+			})
 		}
 	}
 	
-	angular.module('app').controller('ProductControllerList',ProductControllerList);
+	angular.module('app').controller('ProductListController',ProductListController);
 }

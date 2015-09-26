@@ -14,4 +14,5 @@
 /// <reference path="tsd/moment/moment-node.d.ts" />
 /// <reference path="tsd/moment/moment.d.ts" />
 /// <reference path="tsd/oclazyload/oclazyload.d.ts" />
+/// <reference path="tsd/restangular/restangular.d.ts" />
 /// <reference path="tsd/underscore/underscore.d.ts" />

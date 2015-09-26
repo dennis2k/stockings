@@ -8,7 +8,9 @@ module app {
 		'toaster',
 		'ui.router',
 		'ui.bootstrap',
+		'restangular',
 		'LocalStorageModule',
+		'base64',
 		'app.views' 
 		])
 		.config(AppRoutes)

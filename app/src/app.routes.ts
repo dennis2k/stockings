@@ -7,33 +7,32 @@ module app {
             )
         {
             $urlRouterProvider.otherwise( ($injector : ng.auto.IInjectorService) => {
-                    var $state = $injector.get('$state');
-                    $state.go('pages.login');
+                    var $state : any = $injector.get('$state');
+                    $state.go('login');
                 }
             );
             $stateProvider
             
-            .state('app', {
-                abstract: true,
-                url: '/app',                
-                resolve: {
-					myEntity : () => {
-						return "hello"
-					}
-                }
-            })
-            .state('products', {
-                abstract: true,
-                url: '/products',
-                templateUrl : 'src/modules/products/product-list.html',                                
-                controller: 'AppController',
-                resolve: {
-					myEntity : () => {
-						return "hello"
-					}
-                }
+            .state('login', {
+                url: '/',                
+                templateUrl : 'src/modules/authenticate/login.html',
+                controller : AuthController,
+                controllerAs : 'vm'
+                
             })
             
-  	  }
+            .state('app', {
+                abstract : true, 
+                url: '/app',                
+                templateUrl : 'src/templates/app.html'
+            })
+            .state('app.products', {
+                url: '/products',
+                templateUrl : 'src/modules/products/product-list.html',                                
+                controller: 'ProductListController',
+                controllerAs : 'vm'
+            })
+            
+  	  } 
 	}
 }
