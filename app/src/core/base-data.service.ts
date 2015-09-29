@@ -7,15 +7,26 @@ module app {
 		}
 		
 		save(entity : any) {
-			return this.Restangular.all(this.resource).save(entity);
+			if(entity._id) 
+				this.Restangular.one(this.resource,entity._id).customPUT(entity);			
+			else 
+				this.Restangular.one(this.resource).customPOST(entity);	
 		}
 		
 		findAll() : restangular.ICollectionPromise<any> {	
 			return this.Restangular.all(this.resource).getList();
 		}
 		
-		findById(id) {
-			return this.Restangular.one(this.resource, id).get();
+		findById(id,query? : Query) {
+			console.log("QUERY",query)
+			if(query) {
+				console.log(query.toFilter())
+				return this.Restangular.one(this.resource, id).get(query.toFilter());
+			}
+				
+			else
+				return this.Restangular.one(this.resource, id).get();
+			
 		}
 		
 		findByQuery(query : Query) {

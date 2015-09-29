@@ -1,11 +1,21 @@
 <div class="row">
-	
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<div class="form-group">
+			<label class="control-label">Search products</label>
+			<input type="text" ng-model="vm.query" class="form-control" />
+		</div>
+	</div>
+</div>
+<div class="row">	
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<h1>Products</h1>
+		<a class="btn btn-primary pull-right " ui-sref="app.product">Add new</a>
 		<table class="table table-hover table-bordered">
 			<thead>
 				<tr>
 					<th>Name</th>
+					<th>Cost</th>
+					<th>Retail</th>
 					<th>Description</th>
 					<th>Created</th>
 					<th></th>
@@ -14,14 +24,54 @@
 			<tbody>
 				<tr ng-repeat="product in vm.products">
 					<td>{{product.name}}</td>
+					<td>{{product.cost_price}}</td>
+					<td>{{product.retail_price}}</td>
 					<td>{{product.description}}</td>
-					<td>{{product.create_time | date : 'dd-MM-yyyy hh:mm:ss'}}</td>
+					<td>{{product.create_time | date : 'dd-MM-yyyy HH:mm:ss'}}</td>
 					<td>
 						<i class="fa fa-edit pointer" ui-sref="app.product({ id : product._id})" style="margin-right: 5px" />						
-						<i class="fa fa-trash pointer" ng-click="vm.remove(product)" />
+						<i class="fa fa-trash pointer" style="margin-right: 5px" ng-click="vm.remove(product)" />
+						<i class="fa fa-plus pointer" ng-click="vm.addProductForAdjustment(product)" ng-if="vm.isProductAdjustable(product)" />
 					</td>
 				</tr>
 			</tbody>
 		</table>		
 	</div>
+</div>
+<div class="row" ng-repeat="product in vm.productsToAdjust">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<!-- Show stock info -->
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Product name</th>
+					<th>Cost price</th>
+					<th>Retail price</th>
+					<th>Stock location</th>
+					<th>Current Stock</th>
+					<th>Current Value</th>
+					<th>Current Retail</th>
+					<th>Adjustment</th>
+				</tr>
+			</thead> 
+			<tbody>
+				<!-- TODO: Merge product stockings with new stock locations so we operate on the model directly -->
+				<tr ng-repeat="stock in vm.stock_locations">
+					<td>{{product.name}}</td>
+					<td>{{product.cost_price}}</td>
+					<td>{{product.retail_price}}</td>
+					<td>{{stock.name}}</td>
+					<td>{{vm.getCurrentStock(product,stock)}}</td>
+					<td>{{product.cost_price * vm.getCurrentStock(product,stock)}}</td>
+					<td>{{product.retail_price * vm.getCurrentStock(product,stock)}}</td>
+					<td>
+						<!-- Should be a new stock movement NOTE - we need an endpoint to post just movements for product stock -->
+						<i class="fa fa-plus" style="color:green;" ng-click="vm.increaseStock()" />
+						<input type="text" class="form-control" style="width: 40px; display : inline" ng-model="stock.newAdjustmnet" ng-init="0" />
+						<i class="fa fa-minus" style="color:red;" ng-click="vm.decreaseStock()" /> 
+					</td>
+				</tr>
+			</tbody>
+		</table>		
+	</div>	
 </div>

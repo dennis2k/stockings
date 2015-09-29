@@ -26,12 +26,14 @@ var base = {
  */
 var app = {
     name : 'stocking.js',
+    modules : 'src/modules/**/*.ts',
     src : 'src/**/*.ts',
     base : "src/**/base-*.ts",
     dest : 'dist',
     definitions : 'typings/tsd/**/*.ts',
     custom_definitions : 'typings/custom/custom.d.ts',
-    views : 'src/**/*.html'
+    views : 'src/**/*.html',
+    app : 'src/*.ts'
 };
 
 /**
@@ -60,7 +62,7 @@ gulp.task('concat-html',function(){
 gulp.task('do-watch',function() {
     gulp.watch(app.src,['build-src','build-tsconfig']);
     gulp.watch(base.vendor_file,['build-base', 'build-tsconfig']);
-    gulp.watch(app.views,['concat-html']);
+    //gulp.watch(app.views,['concat-html']);
 })
 
 
@@ -78,7 +80,8 @@ gulp.task('build-base', function() {
  * Compile the src - dynamically replace the api endpoint and set timestamp on things that needs not to be cached
  */
 gulp.task('build-src', function () {
-    var tsResult = gulp.src([app.base,app.src,app.definitions,app.custom_definitions])
+    console.log("BUILDING")
+    var tsResult = gulp.src([app.base,app.app,app.modules,app.src,app.definitions,app.custom_definitions])
         .pipe(ts({
             noImplicitAny: false,
             removeComments : false,
@@ -99,7 +102,7 @@ gulp.task('build-src', function () {
 gulp.task('build-tsconfig', function(){
     var target = gulp.src('tsconfig.json');
     //IMPORTANT - app.custom_definitions must go last as it is used to NOT put comma on the last row in tsconfig.json
-    var sources = gulp.src([app.base,app.src,app.definitions,app.custom_definitions], {read: false});
+    var sources = gulp.src([app.base,app.app,app.src,app.definitions,app.custom_definitions], {read: false});
     return target.pipe(inject(sources, {
        starttag: '"files" : [',
         endtag: ']',
@@ -121,7 +124,9 @@ gulp.task('build-tsconfig', function(){
  * 3. compile the bounty.js
  * 4. compile test and watch for src changes
  */
-gulp.task('default',['build-tsconfig', 'build-base','build-src','do-watch','concat-html']);
+gulp.task('default',['build-tsconfig', 'build-base','build-src','do-watch']);
+
+gulp.task('fast',['build-src','do-watch']);
 
 /**
  * Compiles and executes the tests

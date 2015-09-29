@@ -4,6 +4,11 @@ module app {
 		private sorts : string = null;
 		private skips : number = null;
 		private limits : number = null;
+		private populates : Array<string> = [];
+		
+		populate(relations : Array<string>) {
+			 this.populates = relations; 
+		}
 		
 		equals(property : string, value : any) {
 			this.criterias.push({property : property, operator : "", value : value});
@@ -57,6 +62,13 @@ module app {
 			this.criterias.forEach((crit) => {
 				filter[crit.property] = crit.operator + crit.value;
 			})
+			var relations = ""
+			this.populates.forEach((relation) => {
+				relations += "," + relation
+			})
+			relations = relations.replace(/(^,)|(,$)/g, "")
+			if(relations.length > 0)
+				filter.populate = relations;				
 			if(this.skips != null) {}
 				filter.skip = this.skips;			
 			if(this.limits != null)

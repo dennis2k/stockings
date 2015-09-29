@@ -1,18 +1,15 @@
 var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 var now = new Date().getTime();
-var model = mongoose.model('stockings', new mongoose.Schema({
-  location : { type: String, required: true },
-  product_id: { type: mongoose.Schema.Types.ObjectId, ref : 'products' },
-  count : Number,
+var model = mongoose.model('stocklocations', new mongoose.Schema({
+  name : { type: String, required: true },
+  address : String,
+  city : String,
+  zip : String,
+  country : String,
   create_time : {type : Number, default : now},
   update_time : Number,
-  delete_time : Number,  
-  movements : [{ 
-	  adjustment : Number,
-	  adjusted_by : String,
-    timestamp : {type : Number, default : now}
-  }]
+  delete_time : Number  
 }));
 
 module.exports = model;

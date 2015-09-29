@@ -22,8 +22,11 @@ module app {
             Restangular.addResponseInterceptor((data, operation, what, url, response, deferred) => {
                 if(operation == 'remove')
                     toaster.success('Success!','Entity deleted!')
-                if(operation == 'save')
-                    toaster.success('Success!','Entity saved!')
+                if(operation == 'put')
+                    toaster.success('Success!','Entity updated!')
+                if(operation == 'post')
+                    toaster.success('Success!','Entity created!')
+                console.log(operation);
                 console.log(response.status);
                 console.log("Interfacepting data response")
                 return data;

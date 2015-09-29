@@ -33,7 +33,12 @@ module app {
                 controllerAs : 'vm',
                 resolve : {
                     products : (ProductService : ProductService) => {
-                        return ProductService.findAll();
+                        var query = new Query();
+                        query.populate(['stockings.stock_location_id'])
+                        return ProductService.findByQuery(query);
+                    },
+                    stock_locations : (StockLocationService : StockLocationService) => {                        
+                        return StockLocationService.findAll();
                     }
                 }
             })
@@ -44,13 +49,42 @@ module app {
                 controllerAs : 'vm',
                 resolve : {
                     product : (ProductService : ProductService,$stateParams : ng.ui.IStateParamsService) => {
-                        if(AppRoutes.hasId($stateParams))
-                            return ProductService.findById($stateParams['id'])
+                        if(AppRoutes.hasId($stateParams)) {
+                            var query = new Query();
+                            query.populate(['stockings.stock_location_id'])
+                            return ProductService.findById($stateParams['id'],query);
+                            
+                        }                            
                         return null;
                     }
                 }
             })
-            
+            .state('app.stocklocations', {
+                url: '/stocklocations',
+                templateUrl : 'src/modules/stocks/stocklocation-list.html',                                
+                controller: 'StockLocationListController',
+                controllerAs : 'vm',
+                resolve : {
+                    stock_locations : (StockLocationService : StockLocationService) => {                        
+                        return StockLocationService.findAll();
+                    }
+                }
+            })
+            .state('app.stocklocation', {
+                url: '/stocklocations/:id',
+                templateUrl : 'src/modules/stocks/stocklocation.html',                                
+                controller: 'StockLocationController',
+                controllerAs : 'vm',
+                resolve : {
+                    stock_location : (StockLocationService : StockLocationService,$stateParams : ng.ui.IStateParamsService) => {
+                        if(AppRoutes.hasId($stateParams)) {
+                            return StockLocationService.findById($stateParams['id']);
+                        }
+                            
+                        return null;
+                    }
+                }
+            })       
   	     } 
         
         static hasId($stateParams) {
